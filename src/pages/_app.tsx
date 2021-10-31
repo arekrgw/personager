@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import { StoreProvider } from "@stores";
 import { theme } from "@styles";
 import { enableStaticRendering } from "mobx-react-lite";
@@ -10,6 +10,7 @@ enableStaticRendering(typeof window === "undefined");
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <StoreProvider hydrationData={pageProps.hydrationData}>
         <Component {...pageProps} />
       </StoreProvider>
