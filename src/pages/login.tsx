@@ -1,8 +1,10 @@
 import Link from "@components/Link";
 import { Grid, Paper, Typography, Box, TextField, Button } from "@mui/material";
+import { useStore } from "@stores";
 import { NextPage } from "next";
 
 const Login: NextPage = () => {
+  const { authStore } = useStore();
   return (
     <Grid container sx={{ height: "100vh" }}>
       <Grid
@@ -56,6 +58,9 @@ const Login: NextPage = () => {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={() =>
+                authStore.login({ values: { login: "arekrgw", password: "qwerty" } })
+              }
             >
               Login
             </Button>

@@ -10,4 +10,9 @@ declare global {
     width?: string;
     height?: string;
   }
+
+  interface ILoginCredentials {
+    login: string;
+    password: string;
+  }
 }
