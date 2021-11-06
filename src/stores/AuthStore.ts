@@ -50,4 +50,30 @@ export class AuthStore implements IStoreInitializer {
       });
     }
   };
+
+  register = async ({ values }: { values: IRegisterCredentials }) => {
+    try {
+      this.isLoading = true;
+      const { data }: AxiosResponse<IRegisterResponse> = await API.post(
+        API_ROUTES.REGISTER,
+        values
+      );
+
+      this.clearServerError();
+
+      return true;
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const response = (err as AxiosError<IApiDefaultErrorResponse>).response;
+
+        this.setServerError(response?.data.error || "");
+      }
+
+      return false;
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
+    }
+  };
 }

@@ -6,6 +6,10 @@ declare global {
     error?: string;
   }
 
+  interface IRegisterResponse {
+
+  }
+
   interface IApiDefaultErrorResponse {
     success: boolean;
     error: string;
