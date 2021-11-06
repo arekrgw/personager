@@ -15,17 +15,23 @@ import { useCallback, useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 
-const Login: NextPage = ({}) => {
+const Register: NextPage = ({}) => {
   const { authStore } = useStore();
   const router = useRouter();
   const theme = useTheme();
-  const { control, handleSubmit } = useForm<ILoginCredentials>({
-    defaultValues: { login: "", password: "" },
+  const { control, handleSubmit } = useForm<IRegisterCredentials>({
+    defaultValues: {
+      login: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+    },
   });
 
-  const onSubmit: SubmitHandler<ILoginCredentials> = useCallback(
+  const onSubmit: SubmitHandler<IRegisterCredentials> = useCallback(
     async (values) => {
-      if (await authStore.login({ values })) router.replace("/");
+      if (await authStore.register({ values })) router.replace("/login");
     },
     [authStore, router]
   );
@@ -56,7 +62,10 @@ const Login: NextPage = ({}) => {
           }}
         >
           <Typography component="h1" variant="h3">
-            Personager login
+            Personager
+          </Typography>
+          <Typography component="h1" variant="h5">
+            Create account
           </Typography>
 
           <Box
@@ -94,7 +103,6 @@ const Login: NextPage = ({}) => {
                   margin="normal"
                   required
                   fullWidth
-                  type="password"
                   id="password"
                   error={Boolean(fieldState.error)}
                   label="Password"
@@ -120,15 +128,15 @@ const Login: NextPage = ({}) => {
               loading={authStore.isLoading}
               sx={{ mt: 3, mb: 2 }}
             >
-              Login
+              Register
             </LoadingButton>
             <Box>
               <Link
-                href="/register"
+                href="/login"
                 variant="body2"
                 sx={{ textAlign: "center", width: "100%", display: "block" }}
               >
-                {"Don't have an account? Register!"}
+                {"Already have an account? Login!"}
               </Link>
             </Box>
           </Box>
@@ -138,4 +146,4 @@ const Login: NextPage = ({}) => {
   );
 };
 
-export default observer(Login);
+export default observer(Register);

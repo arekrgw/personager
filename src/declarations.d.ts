@@ -15,4 +15,15 @@ declare global {
     login: string;
     password: string;
   }
+  interface IRegisterCredentials {
+    login: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  }
+
+  interface IFormError {
+    formError: string;
+  }
 }

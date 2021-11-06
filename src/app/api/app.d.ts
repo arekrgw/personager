@@ -5,4 +5,9 @@ declare global {
     success: boolean;
     error?: string;
   }
+
+  interface IApiDefaultErrorResponse {
+    success: boolean;
+    error: string;
+  }
 }

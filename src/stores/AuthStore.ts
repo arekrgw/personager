@@ -1,10 +1,12 @@
-import { makeAutoObservable, observable } from "mobx";
+import { makeAutoObservable, observable, runInAction } from "mobx";
 import { RootStore } from "@stores/RootStore";
 import { API, API_ROUTES } from "@app/api";
-import { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 export class AuthStore implements IStoreInitializer {
   initialized = false;
+  serverError = "";
+  isLoading = false;
 
   constructor(public parent: RootStore) {
     makeAutoObservable(this, { parent: observable.ref });
@@ -15,22 +17,37 @@ export class AuthStore implements IStoreInitializer {
     this.initialized = true;
   };
 
-  login = async ({
-    values,
-  }: {
-    values: ILoginCredentials;
-  }): Promise<boolean | string> => {
+  setServerError = (error: string) => {
+    this.serverError = error;
+  };
+
+  clearServerError = () => {
+    this.serverError = "";
+  };
+
+  login = async ({ values }: { values: ILoginCredentials }) => {
     try {
+      this.isLoading = true;
       const { data }: AxiosResponse<ILoginResponse> = await API.post(
         API_ROUTES.LOGIN,
         values
       );
 
-      return data.success;
+      this.clearServerError();
+
+      return true;
     } catch (err) {
-      console.log(err);
+      if (axios.isAxiosError(err)) {
+        const response = (err as AxiosError<IApiDefaultErrorResponse>).response;
+
+        this.setServerError(response?.data.error || "");
+      }
+
       return false;
-      // return data.error;
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
     }
   };
 }

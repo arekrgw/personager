@@ -44,5 +44,6 @@ API.interceptors.response.use(
 );
 
 export const API_ROUTES = {
-  LOGIN: "/auth/login/",
+  LOGIN: "/auth/login",
+  REGISTER: "/auth/register",
 };
