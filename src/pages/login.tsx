@@ -55,7 +55,7 @@ const Login: NextPage = ({}) => {
             mx: 4,
           }}
         >
-          <Typography component="h1" variant="h3">
+          <Typography component="h1" variant="h3" textAlign="center">
             Personager login
           </Typography>
 

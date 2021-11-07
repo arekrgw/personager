@@ -6,14 +6,17 @@ import {
   Box,
   TextField,
   useTheme,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useStore } from "@stores";
 import { observer } from "mobx-react-lite";
 import { NextPage } from "next";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
+import PasswordInput from "@components/PasswordInput";
 
 const Register: NextPage = ({}) => {
   const { authStore } = useStore();
@@ -46,8 +49,8 @@ const Register: NextPage = ({}) => {
         sm={4}
         md={7}
         sx={{
-          backgroundColor: "rgb(63,94,251)",
-          background: "radial-gradient(circle, #c31432 0%, #240b36 100%)",
+          backgroundColor: "#5114c3",
+          background: "radial-gradient(circle, #5114c3 0%, #240b36 100%)",
         }}
       />
       <Grid item xs={12} sm={8} md={5} component={Paper} square elevation={6}>
@@ -93,20 +96,70 @@ const Register: NextPage = ({}) => {
                 />
               )}
             />
-
             <Controller
               control={control}
-              name="password"
+              name="email"
               rules={{ required: true }}
               render={({ field, fieldState }) => (
                 <TextField
                   margin="normal"
                   required
                   fullWidth
+                  id="email"
+                  label="E-mail"
+                  error={Boolean(fieldState.error)}
+                  autoComplete="email"
+                  {...field}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="firstName"
+              rules={{ required: true }}
+              render={({ field, fieldState }) => (
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="First name"
+                  error={Boolean(fieldState.error)}
+                  autoComplete="firstName"
+                  {...field}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="lastName"
+              rules={{ required: true }}
+              render={({ field, fieldState }) => (
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Last name"
+                  error={Boolean(fieldState.error)}
+                  autoComplete="lastName"
+                  {...field}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="password"
+              rules={{ required: true }}
+              render={({ field, fieldState }) => (
+                <PasswordInput
+                  margin="normal"
+                  required
+                  fullWidth
                   id="password"
                   error={Boolean(fieldState.error)}
                   label="Password"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   {...field}
                 />
               )}
