@@ -35,5 +35,4 @@ const PasswordInput: FC<Omit<TextFieldProps, "type">> = ({
     />
   );
 };
-
 export default memo(PasswordInput);

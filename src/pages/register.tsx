@@ -6,23 +6,32 @@ import {
   Box,
   TextField,
   useTheme,
-  InputAdornment,
-  IconButton,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useStore } from "@stores";
 import { observer } from "mobx-react-lite";
 import { NextPage } from "next";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
+import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import PasswordInput from "@components/PasswordInput";
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+  login: yup.string().min(4).required(),
+  password: yup.string().min(6).required(),
+  firstName: yup.string().min(2).required(),
+  lastName: yup.string().min(2).required(),
+  email: yup.string().email().required(),
+});
 
 const Register: NextPage = ({}) => {
   const { authStore } = useStore();
   const router = useRouter();
   const theme = useTheme();
   const { control, handleSubmit } = useForm<IRegisterCredentials>({
+    resolver: yupResolver(schema),
     defaultValues: {
       login: "",
       password: "",
@@ -92,6 +101,7 @@ const Register: NextPage = ({}) => {
                   error={Boolean(fieldState.error)}
                   autoComplete="login"
                   autoFocus
+                  helperText={fieldState.error?.message}
                   {...field}
                 />
               )}
@@ -108,6 +118,7 @@ const Register: NextPage = ({}) => {
                   id="email"
                   label="E-mail"
                   error={Boolean(fieldState.error)}
+                  helperText={fieldState.error?.message}
                   autoComplete="email"
                   {...field}
                 />
@@ -125,6 +136,7 @@ const Register: NextPage = ({}) => {
                   id="firstName"
                   label="First name"
                   error={Boolean(fieldState.error)}
+                  helperText={fieldState.error?.message}
                   autoComplete="firstName"
                   {...field}
                 />
@@ -142,6 +154,7 @@ const Register: NextPage = ({}) => {
                   id="lastName"
                   label="Last name"
                   error={Boolean(fieldState.error)}
+                  helperText={fieldState.error?.message}
                   autoComplete="lastName"
                   {...field}
                 />
@@ -151,13 +164,15 @@ const Register: NextPage = ({}) => {
               control={control}
               name="password"
               rules={{ required: true }}
-              render={({ field, fieldState }) => (
+              render={({ field: { ref, ...field }, fieldState }) => (
                 <PasswordInput
                   margin="normal"
                   required
                   fullWidth
+                  inputRef={ref}
                   id="password"
                   error={Boolean(fieldState.error)}
+                  helperText={fieldState.error?.message}
                   label="Password"
                   autoComplete="new-password"
                   {...field}

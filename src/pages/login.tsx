@@ -14,6 +14,7 @@ import { NextPage } from "next";
 import { useCallback, useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
+import PasswordInput from "@components/PasswordInput";
 
 const Login: NextPage = ({}) => {
   const { authStore } = useStore();
@@ -90,11 +91,10 @@ const Login: NextPage = ({}) => {
               name="password"
               rules={{ required: true }}
               render={({ field, fieldState }) => (
-                <TextField
+                <PasswordInput
                   margin="normal"
                   required
                   fullWidth
-                  type="password"
                   id="password"
                   error={Boolean(fieldState.error)}
                   label="Password"
