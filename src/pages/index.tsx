@@ -1,4 +1,4 @@
-import PageLayout from "@components/PageLayout";
+import { PageLayout } from "@components/PageLayout";
 import { Typography } from "@mui/material";
 import type { NextPage } from "next";
 
