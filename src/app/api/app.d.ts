@@ -6,12 +6,19 @@ declare global {
     error?: string;
   }
 
-  interface IRegisterResponse {
-
-  }
+  interface IRegisterResponse {}
 
   interface IApiDefaultErrorResponse {
     success: boolean;
     error: string;
+  }
+
+  interface IEvent {
+    id: string;
+    startDate: string;
+    endDate: string;
+    name: string;
+    description: string;
+    ownerId: string;
   }
 }

@@ -14,15 +14,15 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": "src",
+    "baseUrl": ".",
     "paths": {
-      "@stores/*": ["stores/*"],
-      "@stores": ["stores"],
-      "@components/*": ["components/*"],
-      "@styles": ["styles"],
-      "@styles/*": ["styles/*"],
-      "@assets/*": ["assets/*"],
-      "@app/*": ["app/*"]
+      "@stores/*": ["src/stores/*"],
+      "@stores": ["src/stores"],
+      "@components/*": ["src/components/*"],
+      "@styles": ["src/styles"],
+      "@styles/*": ["src/styles/*"],
+      "@assets/*": ["src/assets/*"],
+      "@app/*": ["src/app/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
