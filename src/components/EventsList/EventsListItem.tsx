@@ -1,8 +1,10 @@
-import { Paper, Typography, Box, IconButton } from "@mui/material";
+import { Paper, Typography, Box, IconButton, Stack, Chip } from "@mui/material";
 import { FC } from "react";
 import { Edit, Comment, Delete } from "@mui/icons-material";
 import IconButtonLink from "@components/IconButtonLink";
 import { useStore } from "@stores";
+import dayjs from "dayjs";
+import ChipDateDisplay from "@components/ChipDateDisplay";
 
 type EventListItemProps = {
   event: IEvent;
@@ -16,6 +18,11 @@ const EventListItem: FC<EventListItemProps> = ({ event }) => {
     <Paper elevation={3}>
       <Box sx={{ p: 3 }}>
         <Typography variant="h4">{event.name}</Typography>
+        <ChipDateDisplay
+          startDate={event.startDate}
+          endDate={event.endDate}
+          sx={{ my: 1 }}
+        />
         <Typography component="p" variant="body1">
           {event.description || "No description..."}
         </Typography>

@@ -16,6 +16,7 @@
     "@mui/material": "^5.0.6",
     "@types/js-cookie": "^3.0.0",
     "axios": "^0.24.0",
+    "dayjs": "^1.10.7",
     "js-cookie": "^3.0.1",
     "mobx": "^6.3.5",
     "mobx-react-lite": "^3.2.1",
