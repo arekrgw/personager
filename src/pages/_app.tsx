@@ -8,6 +8,7 @@ import "@styles/globalStyle.css";
 enableStaticRendering(typeof window === "undefined");
 
 function MyApp({ Component, pageProps }: AppProps) {
+  console.log("@@PageProps", pageProps);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

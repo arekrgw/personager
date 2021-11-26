@@ -6,12 +6,14 @@ import {
   Box,
   TextField,
   useTheme,
+  Alert,
+  AlertTitle,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useStore } from "@stores";
 import { observer } from "mobx-react-lite";
 import { NextPage } from "next";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
@@ -30,6 +32,7 @@ const Register: NextPage = ({}) => {
   const { authStore } = useStore();
   const router = useRouter();
   const theme = useTheme();
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const { control, handleSubmit } = useForm<IRegisterCredentials>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -43,7 +46,10 @@ const Register: NextPage = ({}) => {
 
   const onSubmit: SubmitHandler<IRegisterCredentials> = useCallback(
     async (values) => {
-      if (await authStore.register({ values })) router.replace("/login");
+      if (await authStore.register({ values })) {
+        setShowSuccessAlert(true);
+        router.replace("/login");
+      }
     },
     [authStore, router]
   );
@@ -87,6 +93,12 @@ const Register: NextPage = ({}) => {
             noValidate
             onSubmit={handleSubmit(onSubmit)}
           >
+            {showSuccessAlert && (
+              <Alert severity="success">
+                <AlertTitle>Registration successful</AlertTitle>
+                You will be redirected shortly
+              </Alert>
+            )}
             <Controller
               control={control}
               name="login"
@@ -169,7 +181,6 @@ const Register: NextPage = ({}) => {
                   margin="normal"
                   required
                   fullWidth
-                  inputRef={ref}
                   id="password"
                   error={Boolean(fieldState.error)}
                   helperText={fieldState.error?.message}

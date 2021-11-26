@@ -24,9 +24,24 @@ import { useRouter } from "next/router";
 interface IPageLayoutProps {}
 
 const LINKS = [
-  { path: "/", Icon: Dashboard, text: "Dashboard" },
-  { path: "/events", Icon: Event, text: "Events" },
-  { path: "/reminders", Icon: Notifications, text: "Reminders" },
+  {
+    path: "/",
+    pathRegexp: new RegExp("^/$"),
+    Icon: Dashboard,
+    text: "Dashboard",
+  },
+  {
+    path: "/events",
+    pathRegexp: new RegExp("^/events.*$"),
+    Icon: Event,
+    text: "Events",
+  },
+  {
+    path: "/reminders",
+    pathRegexp: new RegExp("^/reminders.*$"),
+    Icon: Notifications,
+    text: "Reminders",
+  },
 ];
 
 const PageLayout: FC<IPageLayoutProps> = ({ children }) => {
@@ -76,7 +91,7 @@ const PageLayout: FC<IPageLayoutProps> = ({ children }) => {
             <ListItemLink
               key={link.text}
               href={link.path}
-              selected={router.asPath === link.path}
+              selected={link.pathRegexp.test(router.asPath)}
             >
               <ListItemIcon>
                 <link.Icon />

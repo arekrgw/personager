@@ -1,3 +1,5 @@
 import { createTheme } from "@mui/material";
 
-export const theme = createTheme({});
+let theme = createTheme({});
+
+export { theme };

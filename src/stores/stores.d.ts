@@ -1,7 +1,10 @@
 import { ReactNode } from "react";
+import { EventsStoreHydrationData } from "./EventsStore";
 
 declare global {
-  interface IStoreHydrationData {}
+  interface IStoreHydrationData {
+    eventsStore?: EventsStoreHydrationData;
+  }
 
   interface IStoreInitializer {
     initialize(params: unknown): void;
@@ -11,6 +14,8 @@ declare global {
 
     // you can use when function from mobx to await for the initialization
     initialized: boolean;
+
+    hydrate?(hydrationData: unknown): void;
   }
 
   interface IStoreProvider {

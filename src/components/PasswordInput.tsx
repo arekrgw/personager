@@ -4,35 +4,40 @@ import {
   TextField,
   TextFieldProps,
 } from "@mui/material";
-import { FC, useState, memo } from "react";
+import { FC, useState, memo, forwardRef } from "react";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-const PasswordInput: FC<Omit<TextFieldProps, "type">> = ({
-  InputProps,
-  ...allProps
-}) => {
-  const [showPassword, setShowPassword] = useState(false);
+type PasswordInputProps = Omit<TextFieldProps, "type">;
 
-  return (
-    <TextField
-      type={showPassword ? "text" : "password"}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton
-              aria-label="toggle password visibility"
-              onClick={() => setShowPassword(!showPassword)}
-              edge="end"
-            >
-              {showPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          </InputAdornment>
-        ),
-        ...InputProps,
-      }}
-      {...allProps}
-    />
-  );
-};
+const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
+  ({ InputProps, ...allProps }, ref) => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    return (
+      <TextField
+        ref={ref}
+        type={showPassword ? "text" : "password"}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setShowPassword(!showPassword)}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+          ...InputProps,
+        }}
+        {...allProps}
+      />
+    );
+  }
+);
+
+PasswordInput.displayName = "PasswordInput";
+
 export default memo(PasswordInput);

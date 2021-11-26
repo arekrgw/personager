@@ -1,31 +1,38 @@
-import { API_ROUTES, createApiClient } from "@app/api";
+import { API, API_ROUTES, getBearer } from "@app/api";
+import { EventsList } from "@components/EventsList";
 import { PageLayout } from "@components/PageLayout";
-import { Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import axios, { AxiosResponse } from "axios";
 import type { GetServerSideProps, NextPage } from "next";
+import { observer } from "mobx-react-lite";
+import { useStore } from "@stores";
 
-interface IEventsPage {
-  events: IEvent[] | null;
-}
-
-const Events: NextPage<IEventsPage> = ({ events }) => {
-  console.log(events);
+const Events: NextPage = () => {
+  const { eventsStore } = useStore();
   return (
     <PageLayout>
-      <Typography variant="h1">Events</Typography>
+      <Grid container p={3}>
+        <Grid item sm={12}>
+          <Typography variant="h3">Events</Typography>
+        </Grid>
+        <Grid item sm={12} justifyContent="center" container mt={3}>
+          <EventsList events={eventsStore.events} />
+        </Grid>
+      </Grid>
     </PageLayout>
   );
 };
 
-export const getServerSideProps: GetServerSideProps<IEventsPage> = async (
-  ctx
-) => {
+export const getServerSideProps: GetServerSideProps<{
+  hydrationData: IStoreHydrationData;
+}> = async (ctx) => {
   try {
-    const { data: events }: AxiosResponse<IEvent[]> = await createApiClient(
-      ctx.req.cookies
-    ).get(API_ROUTES.EVENTS.ALL);
+    const { data: events }: AxiosResponse<IEvent[]> = await API.get(
+      API_ROUTES.EVENTS.ALL,
+      { headers: { Authorization: getBearer(ctx.req.cookies) || "" } }
+    );
 
-    return { props: { events } };
+    return { props: { hydrationData: { eventsStore: { events } } } };
   } catch (err) {
     if (axios.isAxiosError(err)) {
       if (err.response?.status === 401) {
@@ -37,8 +44,9 @@ export const getServerSideProps: GetServerSideProps<IEventsPage> = async (
         };
       }
     }
-    return { props: { events: null } };
+
+    return { props: { hydrationData: { eventsStore: { events: [] } } } };
   }
 };
 
-export default Events;
+export default observer(Events);

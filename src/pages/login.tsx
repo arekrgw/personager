@@ -6,12 +6,14 @@ import {
   Box,
   TextField,
   useTheme,
+  Alert,
+  AlertTitle,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useStore } from "@stores";
 import { observer } from "mobx-react-lite";
 import { NextPage } from "next";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import PasswordInput from "@components/PasswordInput";
@@ -19,6 +21,7 @@ import PasswordInput from "@components/PasswordInput";
 const Login: NextPage = ({}) => {
   const { authStore } = useStore();
   const router = useRouter();
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const theme = useTheme();
   const { control, handleSubmit } = useForm<ILoginCredentials>({
     defaultValues: { login: "", password: "" },
@@ -26,7 +29,10 @@ const Login: NextPage = ({}) => {
 
   const onSubmit: SubmitHandler<ILoginCredentials> = useCallback(
     async (values) => {
-      if (await authStore.login({ values })) router.replace("/");
+      if (await authStore.login({ values })) {
+        setShowSuccessAlert(true);
+        router.replace("/");
+      }
     },
     [authStore, router]
   );
@@ -67,6 +73,12 @@ const Login: NextPage = ({}) => {
             noValidate
             onSubmit={handleSubmit(onSubmit)}
           >
+            {showSuccessAlert && (
+              <Alert severity="success">
+                <AlertTitle>Login successful</AlertTitle>
+                You will be redirected shortly
+              </Alert>
+            )}
             <Controller
               control={control}
               name="login"
