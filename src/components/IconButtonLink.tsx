@@ -5,7 +5,7 @@ import {
 import Link, { LinkProps } from "next/link";
 import { FC } from "react";
 
-type IconButtonLink = MuiListItemButtonProps &
+type IconButtonLink = MuiIconButtonProps &
   Pick<LinkProps, "href" | "as" | "prefetch">;
 
 const IconButtonLink: FC<IconButtonLink> = ({

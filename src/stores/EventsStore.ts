@@ -6,7 +6,7 @@ import {
 } from "mobx";
 import { RootStore } from "@stores/RootStore";
 import { API, API_ROUTES } from "@app/api";
-import { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 export type EventsStoreHydrationData = {
   events: IEvent[];
@@ -16,6 +16,8 @@ export class EventsStore implements IStoreInitializer {
   initialized = false;
   events: IObservableArray<IEvent> = observable.array([]);
   isServerError = false;
+  serverError = "";
+  newEvent: IEventSave | null = null;
   isLoading = false;
 
   constructor(public parent: RootStore) {
@@ -29,6 +31,14 @@ export class EventsStore implements IStoreInitializer {
 
   hydrate = ({ events }: EventsStoreHydrationData) => {
     this.events.replace(events);
+  };
+
+  setServerError = (error: string) => {
+    this.serverError = error;
+  };
+
+  clearServerError = () => {
+    this.serverError = "";
   };
 
   deleteEvent = async (eventId: string) => {
@@ -64,6 +74,71 @@ export class EventsStore implements IStoreInitializer {
       runInAction(() => {
         this.isLoading = false;
       });
+    }
+  };
+
+  saveEvent = async (event: IEventSave) => {
+    if (event.id) {
+      try {
+        const { data }: AxiosResponse<IEvent> = await API.put(
+          API_ROUTES.EVENTS.UPDATE(event.id),
+          event
+        );
+
+        const toEditIndex = this.events.findIndex((ev) => ev.id === data.id);
+
+        if (toEditIndex !== -1) {
+          runInAction(() => {
+            this.events[toEditIndex] = { ...data };
+          });
+          return true;
+        }
+        return false;
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          const response = (err as AxiosError<IApiDefaultErrorResponse>)
+            .response;
+          console.log(response?.data);
+          this.setServerError(response?.data.error || "");
+        }
+
+        return false;
+      }
+    }
+
+    try {
+      const { data }: AxiosResponse<IEvent> = await API.post(
+        API_ROUTES.EVENTS.CREATE,
+        event
+      );
+
+      runInAction(() => {
+        this.createProcedure(false);
+        this.events.unshift(data);
+      });
+
+      return true;
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const response = (err as AxiosError<IApiDefaultErrorResponse>).response;
+        console.log(response?.data);
+        this.setServerError(response?.data.error || "");
+      }
+
+      return false;
+    }
+  };
+
+  createProcedure = (start: boolean) => {
+    if (start) {
+      this.newEvent = {
+        description: "",
+        name: "",
+        endDate: "",
+        startDate: "",
+      };
+    } else {
+      this.newEvent = null;
     }
   };
 }

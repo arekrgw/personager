@@ -21,4 +21,15 @@ declare global {
     description: string;
     ownerId: string;
   }
+
+  type IEventSave = Partial<IEvent> &
+    Pick<
+      IEvent,
+      {
+        startDate: string;
+        endDate: string;
+        name: string;
+        description: string;
+      }
+    >;
 }

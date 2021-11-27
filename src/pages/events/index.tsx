@@ -6,17 +6,20 @@ import axios, { AxiosResponse } from "axios";
 import type { GetServerSideProps, NextPage } from "next";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@stores";
+import HeaderBar from "@components/HeaderBar";
 
 const Events: NextPage = () => {
-  const { eventsStore } = useStore();
+  const {
+    eventsStore: { createProcedure },
+  } = useStore();
   return (
     <PageLayout>
-      <Grid container p={3}>
-        <Grid item sm={12}>
-          <Typography variant="h3">Events</Typography>
+      <Grid container pb={3}>
+        <Grid item xs={12}>
+          <HeaderBar title="Events" createFn={() => createProcedure(true)} />
         </Grid>
-        <Grid item sm={12} justifyContent="center" container mt={3}>
-          <EventsList events={eventsStore.events} />
+        <Grid item xs={12} justifyContent="center" container mt={5}>
+          <EventsList />
         </Grid>
       </Grid>
     </PageLayout>
@@ -34,6 +37,7 @@ export const getServerSideProps: GetServerSideProps<{
 
     return { props: { hydrationData: { eventsStore: { events } } } };
   } catch (err) {
+    console.log(err);
     if (axios.isAxiosError(err)) {
       if (err.response?.status === 401) {
         return {

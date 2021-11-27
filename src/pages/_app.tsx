@@ -4,6 +4,8 @@ import { theme } from "@styles";
 import { enableStaticRendering } from "mobx-react-lite";
 import type { AppProps } from "next/app";
 import "@styles/globalStyle.css";
+import { LocalizationProvider } from "@mui/lab";
+import AdapterDayjs from "@mui/lab/AdapterDayjs";
 
 enableStaticRendering(typeof window === "undefined");
 
@@ -12,9 +14,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <StoreProvider hydrationData={pageProps.hydrationData}>
-        <Component {...pageProps} />
-      </StoreProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <StoreProvider hydrationData={pageProps.hydrationData}>
+          <Component {...pageProps} />
+        </StoreProvider>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 }
