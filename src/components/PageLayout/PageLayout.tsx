@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   Event,
   Dashboard,
+  ListAlt,
   Notifications,
 } from "@mui/icons-material";
 import { AppBar, Main, DRAWER_WIDTH, DrawerHeader } from "./styles";
@@ -35,6 +36,12 @@ const LINKS = [
     pathRegexp: new RegExp("^/events.*$"),
     Icon: Event,
     text: "Events",
+  },
+  {
+    path: "/todos",
+    pathRegexp: new RegExp("^/todos.*$"),
+    Icon: ListAlt,
+    text: "Todo Lists",
   },
   {
     path: "/reminders",

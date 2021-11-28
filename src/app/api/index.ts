@@ -72,4 +72,11 @@ export const API_ROUTES = {
     UPDATE: (id: string) => `/events/update/${id}`,
     CREATE: `/events/create`,
   },
+  TODOS: {
+    ALL: "/todos",
+    ONE: (id: string) => `/todos/one/${id}`,
+    DELETE: (id: string) => `/todos/delete/${id}`,
+    UPDATE: (id: string) => `/todos/update/${id}`,
+    CREATE: `/todos/create`,
+  },
 };

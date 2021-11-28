@@ -1,7 +1,7 @@
 import { API, API_ROUTES, getBearer } from "@app/api";
 import { EventsList } from "@components/EventsList";
 import { PageLayout } from "@components/PageLayout";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import axios, { AxiosResponse } from "axios";
 import type { GetServerSideProps, NextPage } from "next";
 import { observer } from "mobx-react-lite";
@@ -10,16 +10,16 @@ import HeaderBar from "@components/HeaderBar";
 
 const Events: NextPage = () => {
   const {
-    eventsStore: { createProcedure },
+    todosStore: { todos },
   } = useStore();
   return (
     <PageLayout>
       <Grid container pb={3}>
         <Grid item xs={12}>
-          <HeaderBar title="Events" createFn={() => createProcedure(true)} />
+          <HeaderBar title="Todo lists" />
         </Grid>
         <Grid item xs={12} justifyContent="center" container mt={5}>
-          <EventsList />
+          {JSON.stringify(todos)}
         </Grid>
       </Grid>
     </PageLayout>
@@ -30,12 +30,12 @@ export const getServerSideProps: GetServerSideProps<{
   hydrationData: IStoreHydrationData;
 }> = async (ctx) => {
   try {
-    const { data: events }: AxiosResponse<IEvent[]> = await API.get(
-      API_ROUTES.EVENTS.ALL,
+    const { data: todos }: AxiosResponse<ITodoList[]> = await API.get(
+      API_ROUTES.TODOS.ALL,
       { headers: { Authorization: getBearer(ctx.req.cookies) || "" } }
     );
 
-    return { props: { hydrationData: { eventsStore: { events } } } };
+    return { props: { hydrationData: { todosStore: { todos } } } };
   } catch (err) {
     console.log(err);
     if (axios.isAxiosError(err)) {
@@ -49,7 +49,7 @@ export const getServerSideProps: GetServerSideProps<{
       }
     }
 
-    return { props: { hydrationData: { eventsStore: { events: [] } } } };
+    return { props: { hydrationData: { todosStore: { todos: [] } } } };
   }
 };
 

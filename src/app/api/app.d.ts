@@ -32,4 +32,15 @@ declare global {
         description: string;
       }
     >;
+
+  interface ITodo {
+    description: string;
+    completed: boolean;
+  }
+
+  interface ITodoList {
+    name: string;
+    completed: boolean;
+    todos: ITodo[];
+  }
 }

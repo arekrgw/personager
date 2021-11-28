@@ -1,9 +1,11 @@
 import { ReactNode } from "react";
 import { EventsStoreHydrationData } from "./EventsStore";
+import { TodosStoreHydrationData } from "./TodosStore";
 
 declare global {
   interface IStoreHydrationData {
     eventsStore?: EventsStoreHydrationData;
+    todosStore?: TodosStoreHydrationData;
   }
 
   interface IStoreInitializer {
