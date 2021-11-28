@@ -7,6 +7,7 @@ import {
 import { RootStore } from "@stores/RootStore";
 import { API, API_ROUTES } from "@app/api";
 import axios, { AxiosError, AxiosResponse } from "axios";
+import dayjs from "dayjs";
 
 export type EventsStoreHydrationData = {
   events: IEvent[];
@@ -39,6 +40,14 @@ export class EventsStore implements IStoreInitializer {
 
   clearServerError = () => {
     this.serverError = "";
+  };
+
+  sortEvents = () => {
+    this.events.replace(
+      this.events.slice().sort((a, b) => {
+        return dayjs(b.startDate).diff(a.startDate, "m");
+      })
+    );
   };
 
   deleteEvent = async (eventId: string) => {
@@ -90,6 +99,7 @@ export class EventsStore implements IStoreInitializer {
         if (toEditIndex !== -1) {
           runInAction(() => {
             this.events[toEditIndex] = { ...data };
+            this.sortEvents();
           });
           return true;
         }
@@ -115,6 +125,7 @@ export class EventsStore implements IStoreInitializer {
       runInAction(() => {
         this.createProcedure(false);
         this.events.unshift(data);
+        this.sortEvents();
       });
 
       return true;
