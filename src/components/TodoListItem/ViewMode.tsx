@@ -34,31 +34,30 @@ const ViewMode: FC<ViewModeProps> = ({
         <List sx={{ width: "100%" }}>
           {todoList.todos.map((todo) => (
             <ListItem key={todo.id} disablePadding>
-              <ListItemButton
-                onClick={() => toggleTodo(todo.id, todoList.id)}
+              {/* <ListItemButton
+
                 dense
-              >
-                <ListItemIcon sx={{ minWidth: 42 }}>
-                  <Checkbox
-                    edge="start"
-                    checked={todo.completed}
-                    disableRipple
-                    inputProps={{ "aria-labelledby": todo.id }}
-                  />
-                </ListItemIcon>
-                <ListItemText id={todo.id}>
-                  <Typography
-                    sx={{
-                      ...(todo.completed && {
-                        textDecoration: "line-through",
-                        color: "text.disabled",
-                      }),
-                    }}
-                  >
-                    {todo.description}
-                  </Typography>
-                </ListItemText>
-              </ListItemButton>
+              > */}
+              <ListItemIcon>
+                <Checkbox
+                  checked={todo.completed}
+                  onClick={() => toggleTodo(todo.id, todoList.id)}
+                  inputProps={{ "aria-labelledby": todo.id }}
+                />
+              </ListItemIcon>
+              <ListItemText id={todo.id}>
+                <Typography
+                  sx={{
+                    ...(todo.completed && {
+                      textDecoration: "line-through",
+                      color: "text.disabled",
+                    }),
+                  }}
+                >
+                  {todo.description}
+                </Typography>
+              </ListItemText>
+              {/* </ListItemButton> */}
             </ListItem>
           ))}
         </List>
