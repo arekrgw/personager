@@ -34,13 +34,16 @@ declare global {
     >;
 
   interface ITodo {
+    id: string;
     description: string;
     completed: boolean;
   }
 
   interface ITodoList {
+    id: string;
     name: string;
     completed: boolean;
     todos: ITodo[];
+    ownerId: string;
   }
 }

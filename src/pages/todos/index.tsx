@@ -1,17 +1,13 @@
 import { API, API_ROUTES, getBearer } from "@app/api";
-import { EventsList } from "@components/EventsList";
 import { PageLayout } from "@components/PageLayout";
-import { Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import axios, { AxiosResponse } from "axios";
 import type { GetServerSideProps, NextPage } from "next";
 import { observer } from "mobx-react-lite";
-import { useStore } from "@stores";
 import HeaderBar from "@components/HeaderBar";
+import { TodosList } from "@components/TodosList";
 
-const Events: NextPage = () => {
-  const {
-    todosStore: { todos },
-  } = useStore();
+const TodoLists: NextPage = () => {
   return (
     <PageLayout>
       <Grid container pb={3}>
@@ -19,7 +15,7 @@ const Events: NextPage = () => {
           <HeaderBar title="Todo lists" />
         </Grid>
         <Grid item xs={12} justifyContent="center" container mt={5}>
-          {JSON.stringify(todos)}
+          <TodosList />
         </Grid>
       </Grid>
     </PageLayout>
@@ -53,4 +49,4 @@ export const getServerSideProps: GetServerSideProps<{
   }
 };
 
-export default observer(Events);
+export default observer(TodoLists);

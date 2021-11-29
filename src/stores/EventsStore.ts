@@ -53,17 +53,13 @@ export class EventsStore implements IStoreInitializer {
   deleteEvent = async (eventId: string) => {
     try {
       await API.delete(API_ROUTES.EVENTS.DELETE(eventId));
-      this.getEvents();
 
       runInAction(() => {
         this.events.replace(this.events.filter((ev) => ev.id !== eventId));
       });
+      this.getEvents();
     } catch (err) {
-      console.debug("[eventsStore.getEvents] failed", err);
-    } finally {
-      runInAction(() => {
-        this.isLoading = false;
-      });
+      console.debug("[eventsStore.deleteEvent] failed", err);
     }
   };
 
