@@ -28,16 +28,17 @@ export const AppBar = styled(MuiAppBar, {
 }));
 
 export const Main = styled("main", {
-  shouldForwardProp: (prop) => prop !== "open",
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "isMobile",
 })<{
   open?: boolean;
-}>(({ theme, open }) => ({
+  isMobile?: boolean;
+}>(({ theme, open, isMobile }) => ({
   flexGrow: 1,
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  marginLeft: `-${DRAWER_WIDTH}px`,
+  marginLeft: isMobile ? 0 : `-${DRAWER_WIDTH}px`,
   ...(open && {
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,

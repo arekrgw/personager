@@ -3,10 +3,12 @@ import {
   makeAutoObservable,
   observable,
   runInAction,
+  toJS,
 } from "mobx";
 import { RootStore } from "@stores/RootStore";
 import { API, API_ROUTES } from "@app/api";
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { v4 } from "uuid";
 
 export type TodosStoreHydrationData = {
   todos: ITodoList[];
@@ -16,6 +18,8 @@ export class TodosStore implements IStoreInitializer {
   todos: IObservableArray<ITodoList> = observable.array([]);
   initialized = false;
   serverError = "";
+  editableId = "";
+  newTodoList: ITodoList | null = null;
 
   constructor(public parent: RootStore) {
     makeAutoObservable(this, { parent: observable.ref });
@@ -38,6 +42,29 @@ export class TodosStore implements IStoreInitializer {
     this.serverError = "";
   };
 
+  setEditableId = (val: string) => {
+    this.editableId = val;
+  };
+
+  addNewTodo = (todoListId: string) => {
+    const newTodo: ITodo = { id: v4(), description: "", completed: false };
+    this.todos.find((tl) => tl.id == todoListId)?.todos.push(newTodo);
+
+    this.setEditableId(newTodo.id);
+  };
+
+  createTodoList = (action: boolean) => {
+    if (action) {
+      this.newTodoList = {
+        name: "",
+        todos: [],
+        completed: false,
+      } as unknown as ITodoList;
+    } else {
+      this.newTodoList = null;
+    }
+  };
+
   getTodoLists = async () => {
     try {
       const { data }: AxiosResponse<ITodoList[]> = await API.get(
@@ -49,6 +76,22 @@ export class TodosStore implements IStoreInitializer {
       });
     } catch (err) {
       console.debug("[todosStore.getTodoLists] failed", err);
+    }
+  };
+
+  deleteTodo = async (todoListId: string, todoId: string) => {
+    let todoList: ITodoList | undefined;
+    let todoListRef: ITodoList | undefined;
+    try {
+      todoListRef = this.todos.find((tl) => tl.id === todoListId);
+      if (todoListRef) {
+        todoList = toJS(todoListRef);
+        todoListRef.todos = todoList.todos.filter((t) => t.id !== todoId);
+        await API.put(API_ROUTES.TODOS.UPDATE(todoListId), todoListRef);
+      }
+    } catch (err) {
+      console.debug("[toggleTodo] failed", err);
+      if (todoList && todoListRef) Object.assign(todoListRef, todoList);
     }
   };
 
@@ -79,8 +122,22 @@ export class TodosStore implements IStoreInitializer {
         );
       }
     } catch (err) {
-      console.debug("[toggleTodo]", err);
+      console.debug("[toggleTodo] failed", err);
       if (todo) todo.completed = !todo.completed;
+    }
+  };
+
+  toggleTodoList = async (todoListId: string) => {
+    let todoList: ITodoList | undefined;
+    try {
+      todoList = this.todos.find((tl) => tl.id === todoListId);
+      if (todoList) {
+        todoList.completed = !todoList.completed;
+        await API.put(API_ROUTES.TODOS.UPDATE(todoListId), todoList);
+      }
+    } catch (err) {
+      console.debug("[toggleTodoList] failed", err);
+      if (todoList) todoList.completed = !todoList.completed;
     }
   };
 
@@ -92,11 +149,11 @@ export class TodosStore implements IStoreInitializer {
           todoList
         );
 
-        const toEditIndex = this.todos.findIndex((tl) => tl.id === data.id);
+        const toEdit = this.todos.find((tl) => tl.id === data.id);
 
-        if (toEditIndex !== -1) {
+        if (toEdit) {
           runInAction(() => {
-            this.todos[toEditIndex] = { ...data };
+            Object.assign(toEdit, { ...data });
           });
           return true;
         }
@@ -112,19 +169,53 @@ export class TodosStore implements IStoreInitializer {
         return false;
       }
     }
-    return false;
+
+    try {
+      const { data }: AxiosResponse<ITodoList> = await API.post(
+        API_ROUTES.TODOS.CREATE,
+        todoList
+      );
+
+      runInAction(() => {
+        this.createTodoList(false);
+        this.todos.push(data);
+      });
+
+      return true;
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const response = (err as AxiosError<IApiDefaultErrorResponse>).response;
+        console.log(response?.data);
+        this.setServerError(response?.data.error || "");
+      }
+
+      return false;
+    }
   };
 
-  createProcedure = (start: boolean) => {
-    // if (start) {
-    //   this.newEvent = {
-    //     description: "",
-    //     name: "",
-    //     endDate: "",
-    //     startDate: "",
-    //   };
-    // } else {
-    //   this.newEvent = null;
-    // }
+  updateTodo = async (
+    todoListId: string,
+    todoId: string,
+    newValues: Partial<ITodo>
+  ) => {
+    let todo: ITodo | undefined;
+    let oldValue: ITodo | undefined;
+    try {
+      todo = this.todos
+        .find((tl) => tl.id === todoListId)
+        ?.todos.find((t) => t.id === todoId);
+
+      if (todo) {
+        oldValue = { ...todo };
+        Object.assign(todo, newValues);
+        await API.put(
+          API_ROUTES.TODOS.UPDATE(todoListId),
+          this.todos.find((tl) => tl.id === todoListId)
+        );
+      }
+    } catch (err) {
+      console.debug("[toggleTodo] failed", err);
+      if (todo && oldValue) Object.assign(todo, oldValue);
+    }
   };
 }

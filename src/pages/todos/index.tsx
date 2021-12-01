@@ -6,19 +6,21 @@ import type { GetServerSideProps, NextPage } from "next";
 import { observer } from "mobx-react-lite";
 import HeaderBar from "@components/HeaderBar";
 import { TodosList } from "@components/TodosList";
+import { useStore } from "@stores";
 
 const TodoLists: NextPage = () => {
+  const {
+    todosStore: { createTodoList },
+  } = useStore();
   return (
-    <PageLayout>
-      <Grid container pb={3}>
-        <Grid item xs={12}>
-          <HeaderBar title="Todo lists" />
-        </Grid>
-        <Grid item xs={12} justifyContent="center" container mt={5}>
-          <TodosList />
-        </Grid>
+    <Grid container pb={3}>
+      <Grid item xs={12}>
+        <HeaderBar title="Todo lists" createFn={() => createTodoList(true)} />
       </Grid>
-    </PageLayout>
+      <Grid item xs={12} justifyContent="center" container mt={5}>
+        <TodosList />
+      </Grid>
+    </Grid>
   );
 };
 

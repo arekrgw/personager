@@ -8,8 +8,9 @@ import {
   Typography,
   Divider,
   ListItemText,
+  useMediaQuery,
 } from "@mui/material";
-import React, { FC, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import {
   Menu,
   ChevronLeft,
@@ -21,6 +22,7 @@ import {
 import { AppBar, Main, DRAWER_WIDTH, DrawerHeader } from "./styles";
 import ListItemLink from "@components/ListItemLink";
 import { useRouter } from "next/router";
+import { Theme } from "@mui/system";
 
 interface IPageLayoutProps {}
 
@@ -52,12 +54,24 @@ const LINKS = [
 ];
 
 const PageLayout: FC<IPageLayoutProps> = ({ children }) => {
-  const [open, setOpen] = useState(true);
+  const matches = useMediaQuery((theme: Theme) => theme.breakpoints.up("sm"));
+  const [open, setOpen] = useState(matches);
+
+  useEffect(() => {
+    setOpen(matches);
+  }, [matches]);
+
   const router = useRouter();
+
+  const closeDrawer = useCallback(() => {
+    if (!matches) {
+      setOpen(false);
+    }
+  }, [matches]);
 
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={matches ? open : false}>
         <Toolbar>
           <IconButton
             size="large"
@@ -83,9 +97,11 @@ const PageLayout: FC<IPageLayoutProps> = ({ children }) => {
             boxSizing: "border-box",
           },
         }}
-        variant="persistent"
+        variant={matches ? "persistent" : "temporary"}
         anchor="left"
         open={open}
+        onClose={closeDrawer}
+        onClick={closeDrawer}
       >
         <DrawerHeader>
           <IconButton onClick={() => setOpen(false)}>
@@ -108,7 +124,7 @@ const PageLayout: FC<IPageLayoutProps> = ({ children }) => {
           ))}
         </List>
       </Drawer>
-      <Main open={open}>
+      <Main open={matches ? open : false} isMobile={!matches}>
         <DrawerHeader />
         <Box>{children}</Box>
       </Main>

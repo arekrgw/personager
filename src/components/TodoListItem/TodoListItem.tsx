@@ -1,6 +1,5 @@
-import { Paper, Box, IconButton, Stack, Chip } from "@mui/material";
+import { Paper } from "@mui/material";
 import { FC, useState } from "react";
-import { Edit, Comment, Delete } from "@mui/icons-material";
 import { useStore } from "@stores";
 import ViewMode from "./ViewMode";
 import EditMode from "./EditMode";
@@ -11,7 +10,7 @@ type TodoListItemProps = {
 
 const TodoListItem: FC<TodoListItemProps> = ({ todoList }) => {
   const {
-    todosStore: { deleteTodoList, toggleTodo, saveTodoList },
+    todosStore: { saveTodoList },
   } = useStore();
 
   const [editMode, setEditMode] = useState(!todoList.id);
@@ -29,9 +28,7 @@ const TodoListItem: FC<TodoListItemProps> = ({ todoList }) => {
         <ViewMode
           todoList={todoList}
           isEditMode={editMode}
-          deleteTodoList={deleteTodoList}
           setEditMode={setEditMode}
-          toggleTodo={toggleTodo}
         />
       )}
     </Paper>

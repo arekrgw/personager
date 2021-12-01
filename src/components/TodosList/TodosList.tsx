@@ -6,16 +6,16 @@ import { useStore } from "@stores";
 
 const TodosLists: FC = () => {
   const {
-    todosStore: { todos },
+    todosStore: { todos, newTodoList },
   } = useStore();
 
   return (
     <Grid container sx={{ maxWidth: "500px", width: "100%" }} rowGap={2}>
-      {/* {newEvent && (
+      {newTodoList && (
         <Grid item xs={12} mb={8}>
-          <EventsListItem event={newEvent} />
+          <TodoListItem todoList={newTodoList} />
         </Grid>
-      )} */}
+      )}
       {!todos?.length ? (
         <Typography>No events...</Typography>
       ) : (

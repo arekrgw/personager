@@ -1,63 +1,89 @@
 import {
   Box,
   Checkbox,
+  IconButton,
   List,
   ListItem,
-  ListItemButton,
   ListItemIcon,
   ListItemText,
+  Stack,
   Typography,
 } from "@mui/material";
+import { Clear } from "@mui/icons-material";
+import { useStore } from "@stores";
 import { observer } from "mobx-react-lite";
-import { FC } from "react";
+import { FC, useState } from "react";
 import BottomToolbar from "./BottomToolbar";
+import EditTodo from "./EditTodo";
 
 type ViewModeProps = {
   todoList: ITodoList;
   isEditMode: boolean;
   setEditMode: (editMode: boolean) => void;
-  deleteTodoList: (id: string) => Promise<void>;
-  toggleTodo: (todoId: string, todoListId: string) => Promise<void>;
 };
 
-const ViewMode: FC<ViewModeProps> = ({
-  todoList,
-  isEditMode,
-  setEditMode,
-  deleteTodoList,
-  toggleTodo,
-}) => {
+const ViewMode: FC<ViewModeProps> = ({ todoList, isEditMode, setEditMode }) => {
+  const {
+    todosStore: {
+      setEditableId,
+      editableId,
+      toggleTodo,
+      toggleTodoList,
+      deleteTodo,
+    },
+  } = useStore();
+
   return (
     <>
       <Box sx={{ p: 3 }}>
-        <Typography variant="h4">{todoList.name}</Typography>
+        <Stack direction="row" justifyContent="space-between">
+          <Typography variant="h4">{todoList.name}</Typography>
+          <Checkbox
+            checked={todoList.completed}
+            onClick={() => toggleTodoList(todoList.id)}
+            inputProps={{ "aria-labelledby": todoList.id }}
+          />
+        </Stack>
         <List sx={{ width: "100%" }}>
           {todoList.todos.map((todo) => (
-            <ListItem key={todo.id} disablePadding>
-              {/* <ListItemButton
-
-                dense
-              > */}
+            <ListItem
+              key={todo.id}
+              sx={{ pl: 0, py: 0 }}
+              secondaryAction={
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  onClick={() => deleteTodo(todoList.id, todo.id)}
+                >
+                  <Clear />
+                </IconButton>
+              }
+            >
               <ListItemIcon>
                 <Checkbox
-                  checked={todo.completed}
+                  checked={todoList.completed || todo.completed}
+                  disabled={todoList.completed}
                   onClick={() => toggleTodo(todo.id, todoList.id)}
                   inputProps={{ "aria-labelledby": todo.id }}
                 />
               </ListItemIcon>
               <ListItemText id={todo.id}>
-                <Typography
-                  sx={{
-                    ...(todo.completed && {
-                      textDecoration: "line-through",
-                      color: "text.disabled",
-                    }),
-                  }}
-                >
-                  {todo.description}
-                </Typography>
+                {editableId === todo.id ? (
+                  <EditTodo todo={todo} todoListId={todoList.id} />
+                ) : (
+                  <Typography
+                    sx={{
+                      ...((todoList.completed || todo.completed) && {
+                        textDecoration: "line-through",
+                        color: "text.disabled",
+                      }),
+                    }}
+                    onClick={() => setEditableId(todo.id)}
+                  >
+                    {todo.description}
+                  </Typography>
+                )}
               </ListItemText>
-              {/* </ListItemButton> */}
             </ListItem>
           ))}
         </List>
@@ -66,7 +92,6 @@ const ViewMode: FC<ViewModeProps> = ({
         isEditMode={isEditMode}
         setEditMode={setEditMode}
         todoList={todoList}
-        deleteTodoList={deleteTodoList}
       />
     </>
   );

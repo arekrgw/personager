@@ -1,20 +1,22 @@
 import { Box, Button, IconButton } from "@mui/material";
 import { FC } from "react";
-import { Edit, Comment, Delete } from "@mui/icons-material";
+import { Edit, Add, Delete } from "@mui/icons-material";
+import { useStore } from "@stores";
 
 type BottomToolbarProps = {
   isEditMode: boolean;
   setEditMode: (editMode: boolean) => void;
-  deleteTodoList?: (id: string) => Promise<void>;
   todoList: ITodoList;
 };
 
 const BottomToolbar: FC<BottomToolbarProps> = ({
   isEditMode,
   setEditMode,
-  deleteTodoList,
   todoList,
 }) => {
+  const {
+    todosStore: { addNewTodo, deleteTodoList },
+  } = useStore();
   return (
     <Box
       sx={{
@@ -33,13 +35,16 @@ const BottomToolbar: FC<BottomToolbarProps> = ({
         </>
       ) : (
         <>
+          <IconButton onClick={() => addNewTodo(todoList.id)}>
+            <Add />
+          </IconButton>
           <IconButton onClick={() => setEditMode(true)}>
             <Edit />
           </IconButton>
           <IconButton
             color="error"
             edge="end"
-            onClick={() => todoList.id && deleteTodoList?.(todoList.id)}
+            onClick={() => todoList.id && deleteTodoList(todoList.id)}
           >
             <Delete />
           </IconButton>

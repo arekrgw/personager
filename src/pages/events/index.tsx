@@ -13,16 +13,14 @@ const Events: NextPage = () => {
     eventsStore: { createProcedure },
   } = useStore();
   return (
-    <PageLayout>
-      <Grid container pb={3}>
-        <Grid item xs={12}>
-          <HeaderBar title="Events" createFn={() => createProcedure(true)} />
-        </Grid>
-        <Grid item xs={12} justifyContent="center" container mt={5}>
-          <EventsList />
-        </Grid>
+    <Grid container pb={3}>
+      <Grid item xs={12}>
+        <HeaderBar title="Events" createFn={() => createProcedure(true)} />
       </Grid>
-    </PageLayout>
+      <Grid item xs={12} justifyContent="center" container mt={5}>
+        <EventsList />
+      </Grid>
+    </Grid>
   );
 };
 
