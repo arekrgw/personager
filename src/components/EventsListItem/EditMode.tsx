@@ -59,7 +59,6 @@ const EditMode: FC<EditModeProps> = ({
 
   const onSubmit: SubmitHandler<IEventSave> = useCallback(
     async (values) => {
-      console.log(values);
       if ((await saveEvent(values)) && values.id) setEditMode(false);
     },
     [saveEvent, setEditMode]

@@ -10,6 +10,7 @@ import { PageLayout } from "@components/PageLayout";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { useRouter } from "next/router";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -18,7 +19,8 @@ enableStaticRendering(typeof window === "undefined");
 
 const PAGES_WITH_NO_LAYOUT = ["/register", "/login"];
 
-function MyApp({ Component, pageProps, router }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   console.log("@@PageProps", pageProps);
 
   return (

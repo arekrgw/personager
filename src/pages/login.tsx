@@ -12,11 +12,13 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { useStore } from "@stores";
 import { observer } from "mobx-react-lite";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import PasswordInput from "@components/PasswordInput";
+import { loggedInGuard } from "@app/api";
+import Head from "next/head";
 
 const Login: NextPage = ({}) => {
   const { authStore } = useStore();
@@ -40,114 +42,131 @@ const Login: NextPage = ({}) => {
   useEffect(() => authStore.clearServerError);
 
   return (
-    <Grid container sx={{ height: "100vh" }}>
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
-        sx={{
-          backgroundColor: "rgb(63,94,251)",
-          background: "radial-gradient(circle, #c31432 0%, #240b36 100%)",
-        }}
-      />
-      <Grid item xs={12} sm={8} md={5} component={Paper} square elevation={6}>
-        <Box
+    <>
+      <Head>
+        <title>Personager - Login</title>
+      </Head>
+      <Grid container sx={{ height: "100vh" }}>
+        <Grid
+          item
+          xs={false}
+          sm={4}
+          md={7}
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "100%",
-            mx: 4,
+            backgroundColor: "rgb(63,94,251)",
+            background: "radial-gradient(circle, #c31432 0%, #240b36 100%)",
           }}
-        >
-          <Typography component="h1" variant="h3" textAlign="center">
-            Personager login
-          </Typography>
-
+        />
+        <Grid item xs={12} sm={8} md={5} component={Paper} square elevation={6}>
           <Box
-            component="form"
-            mt={3}
-            sx={{ width: "100%" }}
-            noValidate
-            onSubmit={handleSubmit(onSubmit)}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: "100%",
+              mx: 4,
+            }}
           >
-            {showSuccessAlert && (
-              <Alert severity="success">
-                <AlertTitle>Login successful</AlertTitle>
-                You will be redirected shortly
-              </Alert>
-            )}
-            <Controller
-              control={control}
-              name="login"
-              rules={{ required: true }}
-              render={({ field, fieldState }) => (
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="login"
-                  label="Login"
-                  error={Boolean(fieldState.error)}
-                  autoComplete="login"
-                  autoFocus
-                  {...field}
-                />
-              )}
-            />
+            <Typography component="h1" variant="h3" textAlign="center">
+              Personager login
+            </Typography>
 
-            <Controller
-              control={control}
-              name="password"
-              rules={{ required: true }}
-              render={({ field, fieldState }) => (
-                <PasswordInput
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="password"
-                  error={Boolean(fieldState.error)}
-                  label="Password"
-                  autoComplete="current-password"
-                  {...field}
-                />
-              )}
-            />
-            {authStore.serverError && (
-              <Box>
-                <Typography
-                  component="p"
-                  sx={{ color: theme.palette.error.main }}
-                >
-                  {authStore.serverError}
-                </Typography>
-              </Box>
-            )}
-            <LoadingButton
-              type="submit"
-              fullWidth
-              variant="contained"
-              loading={authStore.isLoading}
-              sx={{ mt: 3, mb: 2 }}
+            <Box
+              component="form"
+              mt={3}
+              sx={{ width: "100%" }}
+              noValidate
+              onSubmit={handleSubmit(onSubmit)}
             >
-              Login
-            </LoadingButton>
-            <Box>
-              <Link
-                href="/register"
-                variant="body2"
-                sx={{ textAlign: "center", width: "100%", display: "block" }}
+              {showSuccessAlert && (
+                <Alert severity="success">
+                  <AlertTitle>Login successful</AlertTitle>
+                  You will be redirected shortly
+                </Alert>
+              )}
+              <Controller
+                control={control}
+                name="login"
+                rules={{ required: true }}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="login"
+                    label="Login"
+                    error={Boolean(fieldState.error)}
+                    autoComplete="login"
+                    autoFocus
+                    {...field}
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="password"
+                rules={{ required: true }}
+                render={({ field, fieldState }) => (
+                  <PasswordInput
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="password"
+                    error={Boolean(fieldState.error)}
+                    label="Password"
+                    autoComplete="current-password"
+                    {...field}
+                  />
+                )}
+              />
+              {authStore.serverError && (
+                <Box>
+                  <Typography
+                    component="p"
+                    sx={{ color: theme.palette.error.main }}
+                  >
+                    {authStore.serverError}
+                  </Typography>
+                </Box>
+              )}
+              <LoadingButton
+                type="submit"
+                fullWidth
+                variant="contained"
+                loading={authStore.isLoading}
+                sx={{ mt: 3, mb: 2 }}
               >
-                {"Don't have an account? Register!"}
-              </Link>
+                Login
+              </LoadingButton>
+              <Box>
+                <Link
+                  href="/register"
+                  variant="body2"
+                  sx={{ textAlign: "center", width: "100%", display: "block" }}
+                >
+                  {"Don't have an account? Register!"}
+                </Link>
+              </Box>
             </Box>
           </Box>
-        </Box>
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  if (loggedInGuard(ctx.req.cookies))
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+
+  return { props: {} };
 };
 
 export default observer(Login);

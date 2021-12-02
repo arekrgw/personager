@@ -162,7 +162,6 @@ export class TodosStore implements IStoreInitializer {
         if (axios.isAxiosError(err)) {
           const response = (err as AxiosError<IApiDefaultErrorResponse>)
             .response;
-          console.log(response?.data);
           this.setServerError(response?.data.error || "");
         }
 
@@ -185,7 +184,6 @@ export class TodosStore implements IStoreInitializer {
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const response = (err as AxiosError<IApiDefaultErrorResponse>).response;
-        console.log(response?.data);
         this.setServerError(response?.data.error || "");
       }
 

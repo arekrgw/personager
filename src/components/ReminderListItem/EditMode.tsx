@@ -49,7 +49,6 @@ const EditMode: FC<EditModeProps> = ({ reminder, isEditMode, setEditMode }) => {
 
   const onSubmit: SubmitHandler<IReminder> = useCallback(
     async (values) => {
-      console.log(values);
       if ((await saveReminder(values)) && values.id) setEditMode(false);
     },
     [saveReminder, setEditMode]

@@ -29,7 +29,6 @@ const EditMode: FC<EditModeProps> = ({ todoList, isEditMode, setEditMode }) => {
 
   const onSubmit: SubmitHandler<ITodoList> = useCallback(
     async (values) => {
-      console.log(values);
       if ((await saveTodoList(values)) && values.id) setEditMode(false);
     },
     [saveTodoList, setEditMode]

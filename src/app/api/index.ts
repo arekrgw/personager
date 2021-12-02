@@ -1,8 +1,19 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const COOKIES = {
+export const COOKIES = {
   JWT_TOKEN: "personager_jwt",
+};
+
+export const removeJwtCookie = () => {
+  Cookies.remove(COOKIES.JWT_TOKEN);
+};
+
+export const loggedInGuard = (cookies: Record<string, string>) => {
+  if (!cookies[COOKIES.JWT_TOKEN] || cookies[COOKIES.JWT_TOKEN] === "deleted")
+    return false;
+
+  return true;
 };
 
 export const getBearer = (cookies?: Record<string, string>) => {

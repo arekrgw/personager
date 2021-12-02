@@ -12,13 +12,15 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { useStore } from "@stores";
 import { observer } from "mobx-react-lite";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import PasswordInput from "@components/PasswordInput";
 import * as yup from "yup";
+import { loggedInGuard } from "@app/api";
+import Head from "next/head";
 
 const schema = yup.object().shape({
   login: yup.string().min(4).required(),
@@ -57,172 +59,189 @@ const Register: NextPage = ({}) => {
   useEffect(() => authStore.clearServerError);
 
   return (
-    <Grid container sx={{ height: "100vh" }}>
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
-        sx={{
-          backgroundColor: "#5114c3",
-          background: "radial-gradient(circle, #5114c3 0%, #240b36 100%)",
-        }}
-      />
-      <Grid item xs={12} sm={8} md={5} component={Paper} square elevation={6}>
-        <Box
+    <>
+      <Head>
+        <title>Personager - Register</title>
+      </Head>
+      <Grid container sx={{ height: "100vh" }}>
+        <Grid
+          item
+          xs={false}
+          sm={4}
+          md={7}
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "100%",
-            mx: 4,
+            backgroundColor: "#5114c3",
+            background: "radial-gradient(circle, #5114c3 0%, #240b36 100%)",
           }}
-        >
-          <Typography component="h1" variant="h3">
-            Personager
-          </Typography>
-          <Typography component="h1" variant="h5">
-            Create account
-          </Typography>
-
+        />
+        <Grid item xs={12} sm={8} md={5} component={Paper} square elevation={6}>
           <Box
-            component="form"
-            mt={3}
-            sx={{ width: "100%" }}
-            noValidate
-            onSubmit={handleSubmit(onSubmit)}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: "100%",
+              mx: 4,
+            }}
           >
-            {showSuccessAlert && (
-              <Alert severity="success">
-                <AlertTitle>Registration successful</AlertTitle>
-                You will be redirected shortly
-              </Alert>
-            )}
-            <Controller
-              control={control}
-              name="login"
-              rules={{ required: true }}
-              render={({ field, fieldState }) => (
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="login"
-                  label="Login"
-                  error={Boolean(fieldState.error)}
-                  autoComplete="login"
-                  autoFocus
-                  helperText={fieldState.error?.message}
-                  {...field}
-                />
-              )}
-            />
-            <Controller
-              control={control}
-              name="email"
-              rules={{ required: true }}
-              render={({ field, fieldState }) => (
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="E-mail"
-                  error={Boolean(fieldState.error)}
-                  helperText={fieldState.error?.message}
-                  autoComplete="email"
-                  {...field}
-                />
-              )}
-            />
-            <Controller
-              control={control}
-              name="firstName"
-              rules={{ required: true }}
-              render={({ field, fieldState }) => (
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First name"
-                  error={Boolean(fieldState.error)}
-                  helperText={fieldState.error?.message}
-                  autoComplete="firstName"
-                  {...field}
-                />
-              )}
-            />
-            <Controller
-              control={control}
-              name="lastName"
-              rules={{ required: true }}
-              render={({ field, fieldState }) => (
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last name"
-                  error={Boolean(fieldState.error)}
-                  helperText={fieldState.error?.message}
-                  autoComplete="lastName"
-                  {...field}
-                />
-              )}
-            />
-            <Controller
-              control={control}
-              name="password"
-              rules={{ required: true }}
-              render={({ field: { ref, ...field }, fieldState }) => (
-                <PasswordInput
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="password"
-                  error={Boolean(fieldState.error)}
-                  helperText={fieldState.error?.message}
-                  label="Password"
-                  autoComplete="new-password"
-                  {...field}
-                />
-              )}
-            />
-            {authStore.serverError && (
-              <Box>
-                <Typography
-                  component="p"
-                  sx={{ color: theme.palette.error.main }}
-                >
-                  {authStore.serverError}
-                </Typography>
-              </Box>
-            )}
-            <LoadingButton
-              type="submit"
-              fullWidth
-              variant="contained"
-              loading={authStore.isLoading}
-              sx={{ mt: 3, mb: 2 }}
+            <Typography component="h1" variant="h3">
+              Personager
+            </Typography>
+            <Typography component="h1" variant="h5">
+              Create account
+            </Typography>
+
+            <Box
+              component="form"
+              mt={3}
+              sx={{ width: "100%" }}
+              noValidate
+              onSubmit={handleSubmit(onSubmit)}
             >
-              Register
-            </LoadingButton>
-            <Box>
-              <Link
-                href="/login"
-                variant="body2"
-                sx={{ textAlign: "center", width: "100%", display: "block" }}
+              {showSuccessAlert && (
+                <Alert severity="success">
+                  <AlertTitle>Registration successful</AlertTitle>
+                  You will be redirected shortly
+                </Alert>
+              )}
+              <Controller
+                control={control}
+                name="login"
+                rules={{ required: true }}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="login"
+                    label="Login"
+                    error={Boolean(fieldState.error)}
+                    autoComplete="login"
+                    autoFocus
+                    helperText={fieldState.error?.message}
+                    {...field}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="email"
+                rules={{ required: true }}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="email"
+                    label="E-mail"
+                    error={Boolean(fieldState.error)}
+                    helperText={fieldState.error?.message}
+                    autoComplete="email"
+                    {...field}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="firstName"
+                rules={{ required: true }}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="firstName"
+                    label="First name"
+                    error={Boolean(fieldState.error)}
+                    helperText={fieldState.error?.message}
+                    autoComplete="firstName"
+                    {...field}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="lastName"
+                rules={{ required: true }}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="lastName"
+                    label="Last name"
+                    error={Boolean(fieldState.error)}
+                    helperText={fieldState.error?.message}
+                    autoComplete="lastName"
+                    {...field}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="password"
+                rules={{ required: true }}
+                render={({ field: { ref, ...field }, fieldState }) => (
+                  <PasswordInput
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="password"
+                    error={Boolean(fieldState.error)}
+                    helperText={fieldState.error?.message}
+                    label="Password"
+                    autoComplete="new-password"
+                    {...field}
+                  />
+                )}
+              />
+              {authStore.serverError && (
+                <Box>
+                  <Typography
+                    component="p"
+                    sx={{ color: theme.palette.error.main }}
+                  >
+                    {authStore.serverError}
+                  </Typography>
+                </Box>
+              )}
+              <LoadingButton
+                type="submit"
+                fullWidth
+                variant="contained"
+                loading={authStore.isLoading}
+                sx={{ mt: 3, mb: 2 }}
               >
-                {"Already have an account? Login!"}
-              </Link>
+                Register
+              </LoadingButton>
+              <Box>
+                <Link
+                  href="/login"
+                  variant="body2"
+                  sx={{ textAlign: "center", width: "100%", display: "block" }}
+                >
+                  {"Already have an account? Login!"}
+                </Link>
+              </Box>
             </Box>
           </Box>
-        </Box>
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  if (loggedInGuard(ctx.req.cookies))
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+
+  return { props: {} };
 };
 
 export default observer(Register);

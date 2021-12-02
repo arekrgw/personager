@@ -48,7 +48,6 @@ const EditResolver: FC<EditResolverProps> = ({ resolver, reminderId }) => {
 
   const submit = useCallback(
     (values: ResolverEditForm) => {
-      console.log(values);
       if (resolver.whence !== values.temporaryValue) {
         if (resolver.id === "-1") {
           createResolver(reminderId, {

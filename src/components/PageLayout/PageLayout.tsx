@@ -9,6 +9,8 @@ import {
   Divider,
   ListItemText,
   useMediaQuery,
+  Button,
+  ListItemButton,
 } from "@mui/material";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import {
@@ -18,11 +20,13 @@ import {
   Dashboard,
   ListAlt,
   Notifications,
+  Logout,
 } from "@mui/icons-material";
 import { AppBar, Main, DRAWER_WIDTH, DrawerHeader } from "./styles";
 import ListItemLink from "@components/ListItemLink";
 import { useRouter } from "next/router";
 import { Theme } from "@mui/system";
+import { removeJwtCookie } from "@app/api";
 
 interface IPageLayoutProps {}
 
@@ -69,6 +73,11 @@ const PageLayout: FC<IPageLayoutProps> = ({ children }) => {
     }
   }, [matches]);
 
+  const logout = useCallback(() => {
+    removeJwtCookie();
+    router.push("/");
+  }, [router]);
+
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar position="fixed" open={matches ? open : false}>
@@ -86,6 +95,11 @@ const PageLayout: FC<IPageLayoutProps> = ({ children }) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Personager
           </Typography>
+          {matches && (
+            <Button onClick={logout} color="inherit">
+              Log out
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer
@@ -122,6 +136,17 @@ const PageLayout: FC<IPageLayoutProps> = ({ children }) => {
               <ListItemText primary={link.text} />
             </ListItemLink>
           ))}
+          {!matches && (
+            <>
+              <Divider />
+              <ListItemButton onClick={logout}>
+                <ListItemIcon>
+                  <Logout />
+                </ListItemIcon>
+                <ListItemText primary="Log out" />
+              </ListItemButton>
+            </>
+          )}
         </List>
       </Drawer>
       <Main open={matches ? open : false} isMobile={!matches}>
