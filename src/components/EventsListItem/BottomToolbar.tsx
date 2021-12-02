@@ -1,6 +1,6 @@
 import { Box, Button, IconButton } from "@mui/material";
 import { FC } from "react";
-import { Edit, Comment, Delete } from "@mui/icons-material";
+import { Edit, Delete } from "@mui/icons-material";
 
 type BottomToolbarProps = {
   isEditMode: boolean;
@@ -23,7 +23,7 @@ const BottomToolbar: FC<BottomToolbarProps> = ({
         px: 3,
         py: 1,
         display: "flex",
-        justifyContent: isEditMode ? "flex-end" : "space-between",
+        justifyContent: "flex-end",
       }}
     >
       {isEditMode ? (
@@ -33,21 +33,16 @@ const BottomToolbar: FC<BottomToolbarProps> = ({
         </>
       ) : (
         <>
-          <IconButton edge="start">
-            <Comment />
+          <IconButton onClick={() => setEditMode(true)}>
+            <Edit />
           </IconButton>
-          <Box>
-            <IconButton onClick={() => setEditMode(true)}>
-              <Edit />
-            </IconButton>
-            <IconButton
-              color="error"
-              edge="end"
-              onClick={() => event.id && deleteEvent?.(event.id)}
-            >
-              <Delete />
-            </IconButton>
-          </Box>
+          <IconButton
+            color="error"
+            edge="end"
+            onClick={() => event.id && deleteEvent?.(event.id)}
+          >
+            <Delete />
+          </IconButton>
         </>
       )}
     </Box>
