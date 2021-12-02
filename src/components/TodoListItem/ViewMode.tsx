@@ -12,7 +12,7 @@ import {
 import { Clear } from "@mui/icons-material";
 import { useStore } from "@stores";
 import { observer } from "mobx-react-lite";
-import { FC, useState } from "react";
+import { FC } from "react";
 import BottomToolbar from "./BottomToolbar";
 import EditTodo from "./EditTodo";
 
@@ -49,11 +49,15 @@ const ViewMode: FC<ViewModeProps> = ({ todoList, isEditMode, setEditMode }) => {
             <ListItem
               key={todo.id}
               sx={{ pl: 0, py: 0 }}
+              onClick={() => setEditableId(todo.id)}
               secondaryAction={
                 <IconButton
                   edge="end"
                   aria-label="delete"
-                  onClick={() => deleteTodo(todoList.id, todo.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteTodo(todoList.id, todo.id);
+                  }}
                 >
                   <Clear />
                 </IconButton>
@@ -63,7 +67,10 @@ const ViewMode: FC<ViewModeProps> = ({ todoList, isEditMode, setEditMode }) => {
                 <Checkbox
                   checked={todoList.completed || todo.completed}
                   disabled={todoList.completed}
-                  onClick={() => toggleTodo(todo.id, todoList.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleTodo(todo.id, todoList.id);
+                  }}
                   inputProps={{ "aria-labelledby": todo.id }}
                 />
               </ListItemIcon>
@@ -78,7 +85,6 @@ const ViewMode: FC<ViewModeProps> = ({ todoList, isEditMode, setEditMode }) => {
                         color: "text.disabled",
                       }),
                     }}
-                    onClick={() => setEditableId(todo.id)}
                   >
                     {todo.description}
                   </Typography>

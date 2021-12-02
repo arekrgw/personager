@@ -17,7 +17,7 @@ const TodosLists: FC = () => {
         </Grid>
       )}
       {!todos?.length ? (
-        <Typography>No events...</Typography>
+        <Typography>No todo lists...</Typography>
       ) : (
         todos.map((todoList) => (
           <Grid key={todoList.id} item xs={12}>

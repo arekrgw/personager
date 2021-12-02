@@ -15,22 +15,16 @@ type EditModeProps = {
   todoList: ITodoList;
   isEditMode: boolean;
   setEditMode: (editMode: boolean) => void;
-  saveTodoList: (todoList: ITodoList) => Promise<boolean>;
 };
 
-const EditMode: FC<EditModeProps> = ({
-  todoList,
-  saveTodoList,
-  isEditMode,
-  setEditMode,
-}) => {
+const EditMode: FC<EditModeProps> = ({ todoList, isEditMode, setEditMode }) => {
   const { control, handleSubmit } = useForm<ITodoList>({
     defaultValues: { ...todoList },
     resolver: yupResolver(schema),
   });
 
   const {
-    todosStore: { clearServerError, serverError, createTodoList },
+    todosStore: { clearServerError, serverError, createTodoList, saveTodoList },
   } = useStore();
 
   const onSubmit: SubmitHandler<ITodoList> = useCallback(

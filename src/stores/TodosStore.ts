@@ -214,7 +214,7 @@ export class TodosStore implements IStoreInitializer {
         );
       }
     } catch (err) {
-      console.debug("[toggleTodo] failed", err);
+      console.debug("[updateTodo] failed", err);
       if (todo && oldValue) Object.assign(todo, oldValue);
     }
   };

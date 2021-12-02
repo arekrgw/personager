@@ -3,24 +3,24 @@ import { FC, useState } from "react";
 import ViewMode from "./ViewMode";
 import EditMode from "./EditMode";
 
-type TodoListItemProps = {
-  todoList: ITodoList;
+type ReminderListItemItemProps = {
+  reminder: IReminder;
 };
 
-const TodoListItem: FC<TodoListItemProps> = ({ todoList }) => {
-  const [editMode, setEditMode] = useState(!todoList.id);
+const ReminderListItem: FC<ReminderListItemItemProps> = ({ reminder }) => {
+  const [editMode, setEditMode] = useState(!reminder.id);
 
   return (
-    <Paper elevation={!todoList.id ? 8 : 3}>
+    <Paper elevation={!reminder.id ? 8 : 3}>
       {editMode ? (
         <EditMode
-          todoList={todoList}
+          reminder={reminder}
           isEditMode={editMode}
           setEditMode={setEditMode}
         />
       ) : (
         <ViewMode
-          todoList={todoList}
+          reminder={reminder}
           isEditMode={editMode}
           setEditMode={setEditMode}
         />
@@ -29,4 +29,4 @@ const TodoListItem: FC<TodoListItemProps> = ({ todoList }) => {
   );
 };
 
-export default TodoListItem;
+export default ReminderListItem;

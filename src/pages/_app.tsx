@@ -7,6 +7,12 @@ import "@styles/globalStyle.css";
 import { LocalizationProvider } from "@mui/lab";
 import AdapterDayjs from "@mui/lab/AdapterDayjs";
 import { PageLayout } from "@components/PageLayout";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
 
 enableStaticRendering(typeof window === "undefined");
 

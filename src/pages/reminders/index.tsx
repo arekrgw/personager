@@ -1,23 +1,23 @@
 import { API, API_ROUTES, getBearer } from "@app/api";
-import { EventsList } from "@components/EventsList";
 import { Grid } from "@mui/material";
 import axios, { AxiosResponse } from "axios";
 import type { GetServerSideProps, NextPage } from "next";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@stores";
 import HeaderBar from "@components/HeaderBar";
+import RemindersList from "@components/RemindersList/RemindersList";
 
 const Events: NextPage = () => {
   const {
-    eventsStore: { createProcedure },
+    remindersStore: { createReminder },
   } = useStore();
   return (
     <Grid container pb={3}>
       <Grid item xs={12}>
-        <HeaderBar title="Events" createFn={() => createProcedure(true)} />
+        <HeaderBar title="Reminders" createFn={() => createReminder(true)} />
       </Grid>
       <Grid item xs={12} justifyContent="center" container mt={5}>
-        <EventsList />
+        <RemindersList />
       </Grid>
     </Grid>
   );
@@ -27,12 +27,12 @@ export const getServerSideProps: GetServerSideProps<{
   hydrationData: IStoreHydrationData;
 }> = async (ctx) => {
   try {
-    const { data: events }: AxiosResponse<IEvent[]> = await API.get(
-      API_ROUTES.EVENTS.ALL,
+    const { data: reminders }: AxiosResponse<IReminder[]> = await API.get(
+      API_ROUTES.REMINDERS.ALL,
       { headers: { Authorization: getBearer(ctx.req.cookies) || "" } }
     );
 
-    return { props: { hydrationData: { eventsStore: { events } } } };
+    return { props: { hydrationData: { remindersStore: { reminders } } } };
   } catch (err) {
     console.log(err);
     if (axios.isAxiosError(err)) {
@@ -46,7 +46,7 @@ export const getServerSideProps: GetServerSideProps<{
       }
     }
 
-    return { props: { hydrationData: { eventsStore: { events: [] } } } };
+    return { props: { hydrationData: { remindersStore: { reminders: [] } } } };
   }
 };
 

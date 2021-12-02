@@ -1,11 +1,14 @@
 import { ReactNode } from "react";
 import { EventsStoreHydrationData } from "./EventsStore";
+import { RemindersStoreHydrationData } from "./RemindersStore";
 import { TodosStoreHydrationData } from "./TodosStore";
 
 declare global {
   interface IStoreHydrationData {
     eventsStore?: EventsStoreHydrationData;
     todosStore?: TodosStoreHydrationData;
+    remindersStore?: RemindersStoreHydrationData;
+    dashboardStore?: DashboardStoreHydrationData;
   }
 
   interface IStoreInitializer {

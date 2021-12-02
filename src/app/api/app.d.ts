@@ -46,4 +46,24 @@ declare global {
     todos: ITodo[];
     ownerId: string;
   }
+
+  interface IReminderResolver {
+    id: string;
+    reminderId: string;
+    whence: string;
+  }
+
+  interface IReminder {
+    id: string;
+    title: string;
+    description: string;
+    ownerId: string;
+    targetDate: string;
+    resolvers: IReminderResolver[];
+  }
+
+  interface IDashboard {
+    reminders: Omit<IReminder, "resolvers">[];
+    events: IEvent[];
+  }
 }

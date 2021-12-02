@@ -79,4 +79,19 @@ export const API_ROUTES = {
     UPDATE: (id: string) => `/todos/update/${id}`,
     CREATE: `/todos/create`,
   },
+  REMINDERS: {
+    ALL: "/reminders",
+    ONE: (id: string) => `/reminders/one/${id}`,
+    DELETE: (id: string) => `/reminders/delete/${id}`,
+    UPDATE: (id: string) => `/reminders/update/${id}`,
+    CREATE: `/reminders/create`,
+  },
+  RESOLVERS: {
+    DELETE: (id: string) => `/resolvers/delete/${id}`,
+    UPDATE: (id: string) => `/resolvers/update/${id}`,
+    CREATE: (reminderId: string) => `/resolvers/create/${reminderId}`,
+  },
+  DASHBOARD: {
+    ALL: "/dashboard",
+  },
 };

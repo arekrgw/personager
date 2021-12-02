@@ -35,7 +35,6 @@ export const getServerSideProps: GetServerSideProps<{
 
     return { props: { hydrationData: { todosStore: { todos } } } };
   } catch (err) {
-    console.log(err);
     if (axios.isAxiosError(err)) {
       if (err.response?.status === 401) {
         return {
