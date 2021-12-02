@@ -92,7 +92,6 @@ const EditMode: FC<EditModeProps> = ({ reminder, isEditMode, setEditMode }) => {
               error={Boolean(fieldState.error)}
               helperText={fieldState.error?.message}
               autoComplete="description"
-              autoFocus
               {...field}
             />
           )}
